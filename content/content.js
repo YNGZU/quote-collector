@@ -10,7 +10,7 @@
 // you don't control.
 
 (() => {
-  const STYLES = `
+	const STYLES = `
     .qc-widget { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     .qc-widget[hidden] { display: none; }
     .qc-save-btn {
@@ -18,7 +18,7 @@
       color: #FAF6F0;
       border: none;
       border-radius: 8px;
-      padding: 8px 14px;
+      padding: 8px 14px 8px 10px;
       font-size: 13px;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0,0,0,0.18);
@@ -76,60 +76,63 @@
     }
   `;
 
-  let hostEl = null;
-  let shadow = null;
+	let hostEl = null;
+	let shadow = null;
 
-  function ensureWidget() {
-    if (hostEl) return;
-    hostEl = document.createElement('div');
-    hostEl.id = 'quote-collector-root';
-    Object.assign(hostEl.style, {
-      position: 'absolute',
-      zIndex: '2147483647',
-      top: '0',
-      left: '0',
-    });
-    document.documentElement.appendChild(hostEl);
-    shadow = hostEl.attachShadow({ mode: 'open' });
-    shadow.innerHTML = `<style>${STYLES}</style><div class="qc-widget" hidden></div>`;
-  }
+	function ensureWidget() {
+		if (hostEl) return;
+		hostEl = document.createElement('div');
+		hostEl.id = 'quote-collector-root';
+		Object.assign(hostEl.style, {
+			position: 'absolute',
+			zIndex: '2147483647',
+			top: '0',
+			left: '0',
+		});
+		document.documentElement.appendChild(hostEl);
+		shadow = hostEl.attachShadow({ mode: 'open' });
+		shadow.innerHTML = `<style>${STYLES}</style><div class="qc-widget" hidden></div>`;
+	}
 
-  function widgetEl() {
-    ensureWidget();
-    return shadow.querySelector('.qc-widget');
-  }
+	function widgetEl() {
+		ensureWidget();
+		return shadow.querySelector('.qc-widget');
+	}
 
-  // hostEl (not the inner shadow div) is the thing actually attached
-  // to the page, so it's what needs the real on-page coordinates.
-  function positionAt(x, y) {
-    hostEl.style.left = `${x}px`;
-    hostEl.style.top = `${y}px`;
-  }
+	// hostEl (not the inner shadow div) is the thing actually attached
+	// to the page, so it's what needs the real on-page coordinates.
+	function positionAt(x, y) {
+		hostEl.style.left = `${x}px`;
+		hostEl.style.top = `${y}px`;
+	}
 
-  function hideWidget() {
-    if (!shadow) return;
-    const widget = widgetEl();
-    widget.hidden = true;
-    widget.innerHTML = '';
-  }
+	function hideWidget() {
+		if (!shadow) return;
+		const widget = widgetEl();
+		widget.hidden = true;
+		widget.innerHTML = '';
+	}
 
-  function showCollapsedButton(rect, text) {
-    const widget = widgetEl();
-    widget.hidden = false;
-    widget.className = 'qc-widget qc-collapsed';
-    widget.innerHTML = `<button class="qc-save-btn" type="button">💬 Save quote</button>`;
-    positionAt(rect.right - 130 + window.scrollX, rect.bottom + 8 + window.scrollY);
+	function showCollapsedButton(rect, text) {
+		const widget = widgetEl();
+		widget.hidden = false;
+		widget.className = 'qc-widget qc-collapsed';
+		widget.innerHTML = `<button class="qc-save-btn" type="button">💬 Save quote</button>`;
+		positionAt(
+			rect.right - 130 + window.scrollX,
+			rect.bottom + 8 + window.scrollY,
+		);
 
-    widget.querySelector('.qc-save-btn').addEventListener('click', () => {
-      showForm(text, rect);
-    });
-  }
+		widget.querySelector('.qc-save-btn').addEventListener('click', () => {
+			showForm(text, rect);
+		});
+	}
 
-  function showForm(text, rect) {
-    const widget = widgetEl();
-    widget.hidden = false;
-    widget.className = 'qc-widget qc-form';
-    widget.innerHTML = `
+	function showForm(text, rect) {
+		const widget = widgetEl();
+		widget.hidden = false;
+		widget.className = 'qc-widget qc-form';
+		widget.innerHTML = `
       <div class="qc-card">
         <blockquote class="qc-preview"></blockquote>
         <textarea class="qc-note" placeholder="Add a short note (optional)" rows="2"></textarea>
@@ -141,80 +144,80 @@
       </div>
     `;
 
-    // Using textContent (not innerHTML) here means whatever the user
-    // selected on the page is treated as plain text, never as markup —
-    // even if the source page's own HTML leaks into the selection.
-    widget.querySelector('.qc-preview').textContent =
-      text.length > 240 ? text.slice(0, 240) + '…' : text;
+		// Using textContent (not innerHTML) here means whatever the user
+		// selected on the page is treated as plain text, never as markup —
+		// even if the source page's own HTML leaks into the selection.
+		widget.querySelector('.qc-preview').textContent =
+			text.length > 240 ? text.slice(0, 240) + '…' : text;
 
-    if (rect) {
-      positionAt(rect.left + window.scrollX, rect.bottom + 8 + window.scrollY);
-    }
+		if (rect) {
+			positionAt(rect.left + window.scrollX, rect.bottom + 8 + window.scrollY);
+		}
 
-    widget.querySelector('.qc-cancel').addEventListener('click', hideWidget);
-    widget.querySelector('.qc-confirm').addEventListener('click', () => {
-      const note = widget.querySelector('.qc-note').value.trim();
-      const tags = widget
-        .querySelector('.qc-tags')
-        .value.split(',')
-        .map((t) => t.trim().toLowerCase())
-        .filter(Boolean);
+		widget.querySelector('.qc-cancel').addEventListener('click', hideWidget);
+		widget.querySelector('.qc-confirm').addEventListener('click', () => {
+			const note = widget.querySelector('.qc-note').value.trim();
+			const tags = widget
+				.querySelector('.qc-tags')
+				.value.split(',')
+				.map(t => t.trim().toLowerCase())
+				.filter(Boolean);
 
-      chrome.runtime.sendMessage(
-        {
-          type: 'SAVE_QUOTE',
-          payload: {
-            text,
-            note,
-            tags,
-            source: { url: location.href, title: document.title },
-          },
-        },
-        (response) => {
-          if (response?.success) {
-            showSavedConfirmation();
-          }
-        }
-      );
-    });
-  }
+			chrome.runtime.sendMessage(
+				{
+					type: 'SAVE_QUOTE',
+					payload: {
+						text,
+						note,
+						tags,
+						source: { url: location.href, title: document.title },
+					},
+				},
+				response => {
+					if (response?.success) {
+						showSavedConfirmation();
+					}
+				},
+			);
+		});
+	}
 
-  function showSavedConfirmation() {
-    const widget = widgetEl();
-    widget.className = 'qc-widget qc-saved';
-    widget.innerHTML = `<div class="qc-toast">✓ Saved to your library</div>`;
-    setTimeout(hideWidget, 1400);
-  }
+	function showSavedConfirmation() {
+		const widget = widgetEl();
+		widget.className = 'qc-widget qc-saved';
+		widget.innerHTML = `<div class="qc-toast">✓ Saved to your library</div>`;
+		setTimeout(hideWidget, 1400);
+	}
 
-  document.addEventListener('mouseup', (e) => {
-    // composedPath() sees through the shadow boundary even though the
-    // widget's internals are otherwise encapsulated — this is exactly
-    // why it exists, and it's the reliable way to ask "did this event
-    // originate inside my own UI?" without it leaking into the page.
-    if (hostEl && e.composedPath().includes(hostEl)) return;
+	document.addEventListener('mouseup', e => {
+		// composedPath() sees through the shadow boundary even though the
+		// widget's internals are otherwise encapsulated — this is exactly
+		// why it exists, and it's the reliable way to ask "did this event
+		// originate inside my own UI?" without it leaking into the page.
+		if (hostEl && e.composedPath().includes(hostEl)) return;
 
-    const selection = window.getSelection();
-    const text = selection ? selection.toString().trim() : '';
+		const selection = window.getSelection();
+		const text = selection ? selection.toString().trim() : '';
 
-    if (!text || text.length < 3) {
-      hideWidget();
-      return;
-    }
+		if (!text || text.length < 3) {
+			hideWidget();
+			return;
+		}
 
-    const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-    showCollapsedButton(rect, text);
-  });
+		const range = selection.getRangeAt(0);
+		const rect = range.getBoundingClientRect();
+		showCollapsedButton(rect, text);
+	});
 
-  // Right-click → "Save selection as quote" arrives here from background.js.
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.type === 'OPEN_QUOTE_FORM') {
-      // No mouse position is available from a context-menu click, so
-      // anchor near the bottom-right of the current viewport instead.
-      const x = window.scrollX + window.innerWidth - 320;
-      const y = window.scrollY + window.innerHeight - 220;
-      showForm(message.payload.text, null);
-      positionAt(x, y);
-    }
-  });
+	// Right-click → "Save selection as quote" arrives here from background.js.
+	chrome.runtime.onMessage.addListener(message => {
+		if (message.type === 'OPEN_QUOTE_FORM') {
+			// No mouse position is available from a context-menu click, so
+			// anchor near the bottom-right of the current viewport instead.
+			const x = window.scrollX + window.innerWidth - 320;
+			const y = window.scrollY + window.innerHeight - 220;
+			showForm(message.payload.text, null);
+			positionAt(x, y);
+		}
+	});
 })();
