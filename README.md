@@ -26,7 +26,7 @@ on the extension's card to reload your changes.
   same way, if you'd rather not reach for the floating button.
 - **Click the toolbar icon** to open your library: search across quote
   text, notes, tags, and source titles; click a tag pill to filter by it;
-  **Export** downloads everything as a JSON file.
+  **Export ▾** lets you download everything as JSON, TXT, or DOCX.
 
 ## Project structure
 
@@ -39,6 +39,8 @@ quote-collector/
 ├── popup/
 │   ├── popup.html        The toolbar popup's markup
 │   ├── popup.css        Its styling
-│   └── popup.js          Its logic — render, search, filter, delete, export
+│   ├── popup.js          Its logic — render, search, filter, delete
+│   └── export.js         JSON / TXT / DOCX export (DOCX is hand-built: a
+│                          minimal ZIP writer + minimal Word XML, no library)
 └── icons/                Toolbar + store icons (16/48/128px placeholders — swap for your own)
 ```
