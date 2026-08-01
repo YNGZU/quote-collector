@@ -13,17 +13,22 @@
 	const STYLES = `
     .qc-widget { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     .qc-widget[hidden] { display: none; }
-    .qc-save-btn {
-      background: #3D6B64;
-      color: #FAF6F0;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 14px 8px 10px;
-      font-size: 13px;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-    }
-    .qc-save-btn:hover { background: #325A54; }
+	.qc-save-btn {
+  		background: #3D6B64;
+  		color: #FAF6F0;
+  		border: none;
+  		border-radius: 8px;
+  		padding: 8px 18px 8px 15px;
+  		font-size: 13px;
+  		cursor: pointer;
+  		box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  		display: flex;               
+  		align-items: center;         
+  		justify-content: center;     
+  		gap: 6px;                    
+  		white-space: nowrap;
+	}
+  .qc-save-btn:hover { background: #325A54; }
     .qc-card {
       width: 280px;
       background: #FFFFFF;
