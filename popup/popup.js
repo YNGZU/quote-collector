@@ -94,11 +94,6 @@ function applyFilters() {
 	renderQuotes(list);
 }
 
-// Built with createElement rather than an HTML string: each tag comes
-// straight from user input, and closing over `tag` directly in the
-// click handler means we never need to round-trip it through a
-// data-* attribute (and therefore never need to worry about escaping
-// it for that context).
 function renderTagCloud() {
 	const allTags = new Set();
 	allQuotes.forEach(q => q.tags.forEach(t => allTags.add(t)));
@@ -129,11 +124,6 @@ function renderQuotes(list) {
 
 	container.innerHTML = list.map(renderQuoteCard).join('');
 
-	// The href is set via setAttribute rather than interpolated into the
-	// HTML string above. escapeHtml() protects text content just fine,
-	// but a stray " in a page title or URL could otherwise break out of
-	// an href="..." attribute — setAttribute always treats the value as
-	// a literal string, so that whole class of problem doesn't apply.
 	container.querySelectorAll('.quote-card').forEach(card => {
 		const quote = list.find(q => q.id === card.dataset.id);
 		const link = card.querySelector('.meta a');
@@ -170,10 +160,6 @@ async function handleListClick(e) {
 	}
 }
 
-// A reliable escaping trick: assigning to textContent forces the browser
-// to treat the value as plain text, and reading innerHTML back gives us
-// that same text with <, >, and & safely encoded — good enough for
-// anywhere this value ends up inside element content (not an attribute).
 function escapeHtml(str) {
 	const div = document.createElement('div');
 	div.textContent = str ?? '';
