@@ -25,8 +25,10 @@ on the extension's card to reload your changes.
 - **Right-click** selected text → **"Save selection as quote"** works the
   same way, if you'd rather not reach for the floating button.
 - **Click the toolbar icon** to open your library: search across quote
-  text, notes, tags, and source titles; click a tag pill to filter by it;
-  **Export ▾** lets you download everything as JSON, TXT, or DOCX.
+  text, notes, tags, and source titles; click one or more tag pills to filter
+  by all selected tags; use **Edit tags** on any note to change its
+  comma-separated tags; **Export ▾**
+  lets you download everything as JSON, TXT, or DOCX.
 
 ## Project structure
 

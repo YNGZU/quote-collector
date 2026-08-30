@@ -206,16 +206,57 @@ h1 {
 	font-size: 10px;
 }
 
-.quote-card .delete-btn {
+.quote-card .no-tags {
+	color: #948c80;
+	font-style: italic;
+}
+
+.card-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.card-actions button {
 	border: none;
 	background: none;
-	color: #b85c5c;
 	font-size: 11px;
 	cursor: pointer;
 	padding: 0;
 }
+
+.edit-tags-btn,
+.save-tags-btn {
+	color: #3d6b64;
+}
+
+.edit-tags-btn:hover,
+.save-tags-btn:hover,
+.cancel-tags-btn:hover,
 .quote-card .delete-btn:hover {
 	text-decoration: underline;
+}
+
+.cancel-tags-btn,
+.quote-card .delete-btn {
+	color: #b85c5c;
+}
+
+.tags-input {
+	width: 100%;
+	box-sizing: border-box;
+	border: 1px solid #c8bfb2;
+	border-radius: 5px;
+	padding: 4px 7px;
+	font: inherit;
+	font-size: 11px;
+	color: #2b2621;
+	background: #fffdf9;
+}
+
+.tags-input:focus {
+	outline: 2px solid rgba(61, 107, 100, 0.2);
+	border-color: #3d6b64;
 }
 
 .empty-state {
