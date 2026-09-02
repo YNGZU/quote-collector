@@ -146,7 +146,7 @@ function renderQuoteCard(quote) {
       </div>
       <div class="tags" aria-label="Tags">${tagsHtml || '<span class="no-tags">No tags</span>'}</div>
       <div class="card-actions">
-        <button class="edit-tags-btn" data-id="${escapeHtml(quote.id)}" type="button">Edit tags</button>
+		<button class="edit-btn" data-id="${escapeHtml(quote.id)}" type="button">Edit</button>
         <button class="delete-btn" data-id="${escapeHtml(quote.id)}" type="button">Delete</button>
       </div>
     </div>
@@ -154,21 +154,21 @@ function renderQuoteCard(quote) {
 }
 
 async function handleListClick(e) {
-	const editButton = e.target.closest('.edit-tags-btn');
+	const editButton = e.target.closest('.edit-btn');
 	if (editButton) {
-		startTagEditing(editButton.dataset.id);
+		startQuoteEditing(editButton.dataset.id);
 		return;
 	}
 
-	const cancelButton = e.target.closest('.cancel-tags-btn');
+	const cancelButton = e.target.closest('.cancel-edit-btn');
 	if (cancelButton) {
 		applyFilters();
 		return;
 	}
 
-	const saveButton = e.target.closest('.save-tags-btn');
+	const saveButton = e.target.closest('.save-edit-btn');
 	if (saveButton) {
-		await saveEditedTags(saveButton.dataset.id);
+		await saveEditedQuote(saveButton.dataset.id);
 		return;
 	}
 
@@ -187,36 +187,47 @@ async function handleListClick(e) {
 }
 
 function handleListKeydown(e) {
-	if (!e.target.classList.contains('tags-input')) return;
-	if (e.key === 'Enter') {
+	if (!e.target.classList.contains('note-input') && !e.target.classList.contains('tags-input')) return;
+	if (e.key === 'Enter' && (e.target.classList.contains('tags-input') || e.ctrlKey || e.metaKey)) {
 		e.preventDefault();
-		saveEditedTags(e.target.dataset.id);
+		saveEditedQuote(e.target.dataset.id);
 	}
 	if (e.key === 'Escape') applyFilters();
 }
 
-function startTagEditing(id) {
+function startQuoteEditing(id) {
 	const card = document.querySelector(`.quote-card[data-id="${CSS.escape(id)}"]`);
 	const quote = allQuotes.find(q => q.id === id);
 	if (!card || !quote) return;
 
+	const note = card.querySelector('.note');
 	const tags = card.querySelector('.tags');
-	tags.innerHTML = `<input class="tags-input" data-id="${escapeHtml(id)}" type="text" value="${escapeHtml(quote.tags.join(', '))}" aria-label="Edit tags" />`;
+	if (note) {
+		note.outerHTML = `<textarea class="note-input" data-id="${escapeHtml(id)}" rows="3" aria-label="Edit description">${escapeHtml(quote.note)}</textarea>`;
+	} else {
+		card.querySelector('.meta').insertAdjacentHTML('beforebegin', `<textarea class="note-input" data-id="${escapeHtml(id)}" rows="3" aria-label="Edit description" placeholder="Add a short description (optional)"></textarea>`);
+	}
+	tags.innerHTML = `<input class="tags-input" data-id="${escapeHtml(id)}" type="text" value="${escapeHtml(quote.tags.join(', '))}" aria-label="Edit tags" placeholder="Tags (comma-separated)" />`;
 	card.querySelector('.card-actions').innerHTML = `
-		<button class="save-tags-btn" data-id="${escapeHtml(id)}" type="button">Save</button>
-		<button class="cancel-tags-btn" type="button">Cancel</button>
+		<button class="save-edit-btn" data-id="${escapeHtml(id)}" type="button">Save</button>
+		<button class="cancel-edit-btn" type="button">Cancel</button>
 	`;
-	const input = tags.querySelector('.tags-input');
+	const input = card.querySelector('.note-input');
 	input.focus();
 	input.select();
 }
 
-async function saveEditedTags(id) {
-	const input = document.querySelector(`.tags-input[data-id="${CSS.escape(id)}"]`);
+async function saveEditedQuote(id) {
+	const card = document.querySelector(`.quote-card[data-id="${CSS.escape(id)}"]`);
 	const quote = allQuotes.find(q => q.id === id);
-	if (!input || !quote) return;
+	if (!card || !quote) return;
 
-	quote.tags = parseTags(input.value);
+	const noteInput = card.querySelector('.note-input');
+	const tagsInput = card.querySelector('.tags-input');
+	if (!noteInput || !tagsInput) return;
+
+	quote.note = noteInput.value.trim();
+	quote.tags = parseTags(tagsInput.value);
 	await chrome.storage.local.set({ quotes: allQuotes });
 	chrome.runtime.sendMessage({ type: 'QUOTES_CHANGED' });
 	for (const tag of selectedTags) {

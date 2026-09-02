@@ -225,23 +225,24 @@ h1 {
 	padding: 0;
 }
 
-.edit-tags-btn,
-.save-tags-btn {
+.edit-btn,
+.save-edit-btn {
 	color: #3d6b64;
 }
 
-.edit-tags-btn:hover,
-.save-tags-btn:hover,
-.cancel-tags-btn:hover,
+.edit-btn:hover,
+.save-edit-btn:hover,
+.cancel-edit-btn:hover,
 .quote-card .delete-btn:hover {
 	text-decoration: underline;
 }
 
-.cancel-tags-btn,
+.cancel-edit-btn,
 .quote-card .delete-btn {
 	color: #b85c5c;
 }
 
+.note-input,
 .tags-input {
 	width: 100%;
 	box-sizing: border-box;
@@ -254,6 +255,15 @@ h1 {
 	background: #fffdf9;
 }
 
+.note-input {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	resize: vertical;
+	margin: 0 0 8px;
+}
+
+.note-input:focus,
 .tags-input:focus {
 	outline: 2px solid rgba(61, 107, 100, 0.2);
 	border-color: #3d6b64;
