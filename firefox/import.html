@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Import quotes — Quote Collector</title>
+    <link rel="stylesheet" href="import.css" />
+  </head>
+  <body>
+    <main class="import-card">
+      <h1>Import quotes</h1>
+      <p>Select a JSON file exported from Quote Collector.</p>
+      <input id="json-file" type="file" accept="application/json,.json" />
+      <p id="import-status" role="status" aria-live="polite"></p>
+      <button id="close-page" type="button">Close</button>
+    </main>
+    <script src="import.js"></script>
+  </body>
+</html>

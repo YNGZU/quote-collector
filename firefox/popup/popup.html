@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quote Collector</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Quote Collector <span id="quote-counter" class="quote-counter">0</span></h1>
+      <div class="header-actions">
+        <div class="export-wrap">
+          <button id="export-btn" title="Export your library">Export ▾</button>
+          <div id="export-menu" class="export-menu" hidden>
+            <button type="button" data-format="json">as JSON</button>
+            <button type="button" data-format="txt">as TXT</button>
+            <button type="button" data-format="docx">as DOCX</button>
+          </div>
+        </div>
+        <button id="import-btn" class="import-btn" type="button" title="Import quotes from JSON">Import JSON</button>
+      </div>
+    </header>
+    <div class="search-wrap">
+      <input id="search-input" type="search" placeholder="Search text, notes, tags…" />
+      <button id="search-clear" class="search-clear-btn" type="button" aria-label="Clear search" title="Clear">×</button>
+    </div>
+    <div id="tag-cloud"></div>
+    <div class="library-controls">
+      <button id="favorites-filter" class="filter-btn" type="button" aria-pressed="false">☆ Favorites</button>
+      <label class="sort-label" for="sort-select">Sort</label>
+      <select id="sort-select" class="sort-select">
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="az">A–Z</option>
+        <option value="favorites">Favorites</option>
+      </select>
+    </div>
+    <p id="results-count" class="results-count" aria-live="polite">Showing 0 of 0</p>
+    <div id="quotes-list"></div>
+    <script src="export.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

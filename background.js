@@ -7,7 +7,6 @@ chrome.runtime.onInstalled.addListener(() => {
 		title: 'Save selection as quote',
 		contexts: ['selection'],
 	});
-	updateBadge();
 });
 
 // Processing a click on a menu item
@@ -28,14 +27,12 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === 'SAVE_QUOTE') {
 		saveQuote(message.payload).then(() => {
-			updateBadge();
 			sendResponse({ success: true });
 		});
 		return true;
 	}
 
 	if (message.type === 'QUOTES_CHANGED') {
-		updateBadge();
 	}
 });
 
@@ -51,12 +48,4 @@ async function saveQuote(data) {
 	};
 	quotes.unshift(quote);
 	await chrome.storage.local.set({ quotes });
-}
-
-async function updateBadge() {
-	const { quotes = [] } = await chrome.storage.local.get('quotes');
-	chrome.action.setBadgeText({
-		text: quotes.length ? String(quotes.length) : '',
-	});
-	chrome.action.setBadgeBackgroundColor({ color: '#3D6B64' });
 }

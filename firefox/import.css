@@ -1,0 +1,10 @@
+* { box-sizing: border-box; }
+body { margin: 0; padding: 32px; min-width: 360px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #faf6f0; color: #2b2621; }
+.import-card { max-width: 520px; margin: 40px auto; padding: 24px; background: #fff; border: 1px solid #e8e1d6; border-radius: 12px; box-shadow: 0 8px 24px rgba(43, 38, 33, .08); }
+h1 { margin-top: 0; font-size: 20px; }
+p { color: #6b6259; }
+#json-file { display: block; margin: 20px 0; }
+#close-page { border: 1px solid #e8e1d6; border-radius: 6px; padding: 7px 12px; background: #fff; color: #3d6b64; cursor: pointer; }
+#json-file:focus, #close-page:focus { outline: 2px solid rgba(61, 107, 100, .55); outline-offset: 2px; }
+.success { color: #3d6b64; }
+.error { color: #b85c5c; }
